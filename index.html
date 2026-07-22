@@ -52,6 +52,13 @@
   }
   .insta-bar .insta-handle { opacity: .9; font-weight: 500; }
   .insta-bar-bottom { margin-top: 40px; border-radius: 14px; }
+  .kakao-bar {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: #FEE500; color: #3A2A33;
+    font-weight: 700; font-size: 15px; padding: 14px 12px; text-align: center;
+    border: none; width: 100%; cursor: pointer; font-family: inherit;
+  }
+  .kakao-bar.copied { background: #FF6B8B; color: #fff; }
 
   header.hero {
     text-align: center;
@@ -365,6 +372,7 @@
   <a class="insta-bar" href="https://www.instagram.com/2bin_mom" target="_blank" rel="noopener">
     <span class="insta-icon">📷</span> 투빈맘 인스타그램 바로가기 <span class="insta-handle">@2bin_mom</span>
   </a>
+  <button type="button" class="kakao-bar" onclick="shareKakao(this)">💬 카톡으로 공유</button>
 
 <div class="wrap">
   <header class="hero">
@@ -850,6 +858,31 @@
     <span class="insta-icon">📷</span> 투빈맘 인스타그램 바로가기 <span class="insta-handle">@2bin_mom</span>
   </a>
 
+<script>
+function shareKakao(btn){
+  var url = location.href;
+  if (navigator.share){
+    navigator.share({ title: document.title, url: url }).catch(function(){});
+    return;
+  }
+  var textarea = document.createElement("textarea");
+  textarea.value = url;
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  var ok = false;
+  try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+  document.body.removeChild(textarea);
+  if (btn._resetTimer) clearTimeout(btn._resetTimer);
+  btn.classList.add("copied");
+  btn.textContent = ok ? "✅ 링크 복사완료!" : "🔗 " + url;
+  btn._resetTimer = setTimeout(function(){
+    btn.classList.remove("copied");
+    btn.textContent = "💬 카톡으로 공유";
+  }, ok ? 1800 : 4000);
+}
+</script>
 <script>
 (function () {
   var STORAGE_KEY = 'snackGuideDone';
